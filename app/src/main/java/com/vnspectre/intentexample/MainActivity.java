@@ -2,10 +2,12 @@ package com.vnspectre.intentexample;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.support.v4.app.ShareCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -50,16 +52,20 @@ public class MainActivity extends AppCompatActivity {
      * @param v
      */
     public void onClickShareTextButton(View v) {
-
+        String textToShare = "I don't know how to share this text.";
+        shareText(textToShare);
     }
 
     /**
-     * This is where we will create and fire off our own mplicit Intent.
+     * This is where we will create and fire off our own implicit Intent.
      *
      * @param v
      */
     public void createYourOwn(View v) {
-
+        Toast.makeText(this,
+                "TODO: Create Own Implicit Intent",
+                Toast.LENGTH_SHORT)
+                .show();
     }
 
     /**
@@ -111,6 +117,32 @@ public class MainActivity extends AppCompatActivity {
         if (intent.resolveActivity(getPackageManager()) != null) {
             startActivity(intent);
         }
+    }
+
+    /**
+     * This method shares text and allows a user to select which app they would like to use to
+     * share the text. Using ShareCompat's IntentBuilder, we some really cool functionality for
+     * free. The chooser that is started using the startChooser() method will create a chooser when
+     * more one app on the device can handle the Intent.
+     *
+     * @param textToShare
+     */
+    private void shareText(String textToShare) {
+        /*
+         * we can think of MIME types similarly to file extensions. They aren't the exact same,
+         * but MIME types help a computer determine which applications can open which content. For
+         * example, if you double click on a .pdf file, you will be presented with a list of
+         * programs that can open PDFs. Specifying the MIME type as text/plain has a similar affect
+         * on our implicit Intent. With text/plain specified, all apps that can handle text content
+         * in some way will be offered when we call startActivity on this particular Intent.
+         */
+        String nimeType = "text/html";
+
+        /* This is just the title of the window that will pop up when we call startActivity */
+        String title = "Learning how to Share";
+
+        /* ShareCompat.IntentBuilder provides a fluent API for creating Intents */
+        ShareCompat.IntentBuilder.from(this).setType(nimeType).setChooserTitle(title).setText(textToShare).startChooser();
     }
 
 }
